@@ -31,33 +31,53 @@ export class Enemy {
         }
     }
 
-    draw(ctx) {
-        ctx.fillStyle = (this.poisonTime > 0 && this.canBePoisoned)
-            ? "green"
-            : this.color;
+draw(ctx) {
+    // ----- Enemy Shape -----
+    ctx.fillStyle = (this.poisonTime > 0 && this.canBePoisoned)
+        ? "green"
+        : this.color;
 
-        ctx.beginPath();
+    ctx.beginPath();
 
-        switch (this.shape) {
-            case "circle":
-                ctx.arc(this.x, this.y, 20, 0, Math.PI * 2);
-                break;
-            case "triangle":
-                ctx.moveTo(this.x, this.y - 20);
-                ctx.lineTo(this.x + 20, this.y + 20);
-                ctx.lineTo(this.x - 20, this.y + 20);
-                ctx.closePath();
-                break;
-            case "square":
-                ctx.rect(this.x - 20, this.y - 20, 40, 40);
-                break;
-            default:
-                ctx.arc(this.x, this.y, 20, 0, Math.PI * 2);
-        }
-
-        ctx.fill();
+    switch (this.shape) {
+        case "circle":
+            ctx.arc(this.x, this.y, 20, 0, Math.PI * 2);
+            break;
+        case "triangle":
+            ctx.moveTo(this.x, this.y - 20);
+            ctx.lineTo(this.x + 20, this.y + 20);
+            ctx.lineTo(this.x - 20, this.y + 20);
+            ctx.closePath();
+            break;
+        case "square":
+            ctx.rect(this.x - 20, this.y - 20, 40, 40);
+            break;
+        default:
+            ctx.arc(this.x, this.y, 20, 0, Math.PI * 2);
     }
+
+    ctx.fill();
+
+    // ----- Health Bar -----
+    const barWidth = 40;
+    const barHeight = 6;
+    const barX = this.x - barWidth / 2;
+    const barY = this.y - 32; // slightly above the enemy
+
+    // Border
+    ctx.fillStyle = "black";
+    ctx.fillRect(barX - 1, barY - 1, barWidth + 2, barHeight + 2);
+
+    // Background
+    ctx.fillStyle = "#660000";
+    ctx.fillRect(barX, barY, barWidth, barHeight);
+
+    // Current HP amount
+    const hpPercent = Math.max(0, this.hp / this.maxHp);
+    ctx.fillStyle = hpPercent < 0.3 ? "red" : "limegreen";
+    ctx.fillRect(barX, barY, barWidth * hpPercent, barHeight);
 }
+
 
 export const ENEMY_TYPES = {
     circle:   { speed: 120, hp: 40, color: "red",       shape: "circle",   canBePoisoned: true },
